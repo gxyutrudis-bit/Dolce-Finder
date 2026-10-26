@@ -1,0 +1,21 @@
+{
+  "name": "dolce-finder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Discord bot for searching shop items.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "deploy": "node scripts/deploy-commands.js",
+    "check": "node --check src/index.js && node --check src/commands/find.js && node --check src/commands/findimage.js && node --check src/commands/addbalance.js && node --check src/commands/viewbalance.js && node --check src/commands/usebalance.js && node --check src/commands/pricelist.js && node --check src/balance-store.js && node --check src/image-search.js && node --check src/format-price.js && node --check src/format-item-details.js && node --check src/result-container.js && node --check scripts/deploy-commands.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.4.7",
+    "sharp": "^0.35.5"
+  }
+}
