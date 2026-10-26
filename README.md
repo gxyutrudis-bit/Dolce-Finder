@@ -5,9 +5,9 @@ A Discord bot that searches a local catalog of shop items with `/find` and `/fin
 ## Setup
 
 1. Install Node.js 20.9 or newer, then run `npm install`.
-2. Copy `.env.example` to `.env` and set `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `DISCORD_GUILD_ID`.
+2. Copy `.env.example` to `.env` and set `DISCORD_TOKEN` and `DISCORD_CLIENT_ID`. Set `DISCORD_GUILD_ID` optionally to remove old guild-only commands from that server during deployment.
 3. Add items, including an `imageUrl` for image search, to `data/shop-items.json`.
-4. Run `npm run deploy` to register the command in your development server.
+4. Run `npm run deploy` to register commands globally. Global commands can take some time to appear in Discord.
 5. Run `npm start` to start the bot.
 
 ## Balances

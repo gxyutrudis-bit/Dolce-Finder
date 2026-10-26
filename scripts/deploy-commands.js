@@ -10,16 +10,16 @@ const priceListCommand = require('../src/commands/pricelist');
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, DISCORD_GUILD_ID } = process.env;
 
-if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID || !DISCORD_GUILD_ID) {
+if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
   throw new Error(
-    'Set DISCORD_TOKEN, DISCORD_CLIENT_ID, and DISCORD_GUILD_ID in your .env file.',
+    'Set DISCORD_TOKEN and DISCORD_CLIENT_ID in your .env file.',
   );
 }
 
 const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
 
 rest
-  .put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID), {
+  .put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
     body: [
       findCommand.data.toJSON(),
       findImageCommand.data.toJSON(),
@@ -29,8 +29,17 @@ rest
       priceListCommand.data.toJSON(),
     ],
   })
-  .then(() => console.log('Registered bot commands in the development server.'))
+  .then(async () => {
+    if (DISCORD_GUILD_ID) {
+      await rest.put(
+        Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID),
+        { body: [] },
+      );
+    }
+
+    console.log('Registered global bot commands.');
+  })
   .catch((error) => {
-    console.error('Could not register /find:', error);
+    console.error('Could not register global bot commands:', error);
     process.exitCode = 1;
   });
