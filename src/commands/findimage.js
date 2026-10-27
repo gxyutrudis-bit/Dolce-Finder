@@ -1,5 +1,5 @@
 const { MessageFlags, SlashCommandBuilder } = require('discord.js');
-const items = require('../../data/shop-items.json');
+const { getShopItems } = require('../catalog-store');
 const { MAX_IMAGE_BYTES, findImageMatches } = require('../image-search');
 const {
   createNoticeContainer,
@@ -29,6 +29,18 @@ async function execute(interaction) {
       ),
       flags: MessageFlags.IsComponentsV2,
     });
+    return;
+  }
+
+  const items = await getShopItems();
+  if (items.length === 0) {
+    await interaction.reply(
+      toComponentsV2Payload(
+        createNoticeContainer(
+          'The shop catalog is empty. Add items with an `imageUrl` to `data/shop-items.json` first.',
+        ),
+      ),
+    );
     return;
   }
 

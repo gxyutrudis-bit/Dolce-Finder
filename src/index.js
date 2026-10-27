@@ -7,6 +7,7 @@ const addBalanceCommand = require('./commands/addbalance');
 const viewBalanceCommand = require('./commands/viewbalance');
 const useBalanceCommand = require('./commands/usebalance');
 const priceListCommand = require('./commands/pricelist');
+const syncShopCommand = require('./commands/syncshop');
 
 const token = process.env.DISCORD_TOKEN;
 
@@ -22,6 +23,7 @@ const commands = new Collection([
   [viewBalanceCommand.data.name, viewBalanceCommand],
   [useBalanceCommand.data.name, useBalanceCommand],
   [priceListCommand.data.name, priceListCommand],
+  [syncShopCommand.data.name, syncShopCommand],
 ]);
 
 client.once(Events.ClientReady, (readyClient) => {

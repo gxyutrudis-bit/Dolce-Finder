@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const items = require('../../data/shop-items.json');
+const { getShopItems } = require('../catalog-store');
 const {
   createNoticeContainer,
   createResultsContainer,
@@ -16,13 +16,55 @@ const data = new SlashCommandBuilder()
       .setRequired(true),
   );
 
+function normalizeSearchText(value) {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .replace(/[^\p{Letter}\p{Number}]+/gu, ' ')
+    .trim();
+}
+
+function findMatches(query, candidates) {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) return [];
+
+  return candidates
+    .map((item, index) => {
+      const name = normalizeSearchText(item.name);
+      const description = normalizeSearchText(item.description ?? '');
+      let score;
+
+      if (name === normalizedQuery) score = 0;
+      else if (name.startsWith(normalizedQuery)) score = 1;
+      else if (name.includes(normalizedQuery)) score = 2;
+      else if (description.includes(normalizedQuery)) score = 3;
+      else return null;
+
+      return { item, score, index };
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.score - right.score || left.index - right.index)
+    .slice(0, 5)
+    .map(({ item }) => item);
+}
+
 async function execute(interaction) {
-  const query = interaction.options.getString('query').trim().toLowerCase();
-  const matches = items
-    .filter((item) =>
-      `${item.name} ${item.description ?? ''}`.toLowerCase().includes(query),
-    )
-    .slice(0, 5);
+  const query = interaction.options.getString('query').trim();
+  const items = await getShopItems();
+
+  if (items.length === 0) {
+    await interaction.reply(
+      toComponentsV2Payload(
+        createNoticeContainer(
+          'The shop catalog is empty. Add items to `data/shop-items.json` first.',
+        ),
+      ),
+    );
+    return;
+  }
+
+  const matches = findMatches(query, items);
 
   if (matches.length === 0) {
     await interaction.reply(
@@ -38,4 +80,4 @@ async function execute(interaction) {
   );
 }
 
-module.exports = { data, execute };
+module.exports = { data, execute, findMatches };

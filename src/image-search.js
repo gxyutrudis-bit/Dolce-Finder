@@ -42,6 +42,7 @@ async function readImage(url) {
 async function calculatePerceptualHash(imageBuffer) {
   const { data } = await sharp(imageBuffer)
     .rotate()
+    .flatten({ background: { r: 255, g: 255, b: 255 } })
     .resize(32, 32, { fit: 'fill' })
     .removeAlpha()
     .greyscale()

@@ -7,6 +7,7 @@ const addBalanceCommand = require('../src/commands/addbalance');
 const viewBalanceCommand = require('../src/commands/viewbalance');
 const useBalanceCommand = require('../src/commands/usebalance');
 const priceListCommand = require('../src/commands/pricelist');
+const syncShopCommand = require('../src/commands/syncshop');
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, DISCORD_GUILD_ID } = process.env;
 
@@ -27,6 +28,7 @@ rest
       viewBalanceCommand.data.toJSON(),
       useBalanceCommand.data.toJSON(),
       priceListCommand.data.toJSON(),
+      syncShopCommand.data.toJSON(),
     ],
   })
   .then(async () => {
